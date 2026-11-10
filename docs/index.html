@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu primer agente con Grok Bot (guía gratis en español)</title>
+<meta name="description" content="Cómo crear tu primer agente con Grok Bot, el agente con computador propio en la nube: ManyChat, imágenes y videos, recordatorios y WhatsApp, con los mensajes listos para copiar.">
+<meta property="og:title" content="Tu primer agente con Grok Bot">
+<meta property="og:description" content="Los 4 usos que te mostré, listos para copiar. En español.">
+<meta property="og:image" content="https://diegodoc1111.github.io/agente-grok-bot/img/og.jpg">
+<meta property="og:url" content="https://diegodoc1111.github.io/agente-grok-bot/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #EEE8DB; --tinta: #1F1D1A; --texto: #3A3733; --suave: #6E6A63;
+    --terra: #D9774F; --terra-osc: #B85C37; --rosa: #F6DED5; --carta: #FBF8F2; --linea: #E0D8C8; --term: #1E1C1A;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 17px/1.6 var(--sans); }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 22px 64px; }
+  .cabeza { display: flex; align-items: flex-end; gap: 18px; margin: 8px 0 18px; }
+  .cabeza img { width: 92px; height: auto; image-rendering: pixelated; flex: none; }
+  .etiqueta { display: inline-block; font: 600 13px/1 var(--mono); letter-spacing: .08em; color: var(--terra-osc); background: var(--rosa); padding: 8px 12px; border-radius: 999px; }
+  h1 { font: 400 clamp(40px, 8.5vw, 62px)/1.02 var(--serif); color: var(--tinta); margin: 14px 0 14px; letter-spacing: -.01em; }
+  h1 em, h2 em { color: var(--terra); }
+  .bajada { font-size: 19px; margin: 0 0 22px; } .bajada strong { color: var(--tinta); }
+  .foto { display: block; width: 100%; height: auto; border-radius: 16px; border: 1px solid var(--linea); box-shadow: 0 10px 30px rgba(30,20,15,.18); margin: 0 0 10px; }
+  .pie { font-size: 14px; color: var(--suave); margin: 0 0 24px; }
+  .avisos { display: grid; gap: 10px; margin: 0 0 34px; padding: 0; list-style: none; }
+  .avisos li { background: var(--carta); border: 1px solid var(--linea); border-radius: 14px; padding: 12px 16px; font-size: 15.5px; }
+  .avisos li b { color: var(--tinta); }
+  .paso { position: relative; margin: 0 0 30px; padding: 22px 20px 20px; background: var(--carta); border: 1px solid var(--linea); border-radius: 20px; }
+  .num { position: absolute; top: -16px; left: 18px; width: 36px; height: 36px; border-radius: 50%; background: var(--terra); color: #fff; font: 700 17px/36px var(--sans); text-align: center; box-shadow: 0 2px 0 var(--terra-osc); }
+  h2 { font: 400 30px/1.15 var(--serif); color: var(--tinta); margin: 8px 0 10px; }
+  h3 { font: 700 16px/1.3 var(--sans); color: var(--tinta); margin: 18px 0 6px; }
+  .paso p { margin: 0 0 12px; } .paso p:last-child { margin-bottom: 0; }
+  .paso ol, .paso ul { margin: 0 0 12px; padding-left: 22px; } .paso li { margin: 5px 0; }
+  a { color: var(--terra-osc); text-underline-offset: 3px; }
+  .boton { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 14px 0 12px; padding: 16px 20px; border-radius: 999px; background: var(--terra); color: #fff; text-decoration: none; font: 700 18px/1.2 var(--sans); box-shadow: 0 3px 0 var(--terra-osc); border: 0; width: 100%; cursor: pointer; }
+  .boton:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--terra-osc); }
+  .nota { font-size: 14.5px; color: var(--suave); }
+  .term { background: var(--term); border-radius: 14px; overflow: hidden; margin: 12px 0 0; box-shadow: 0 6px 20px rgba(30,20,15,.22); }
+  .term .barra { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #2A2724; font: 12.5px var(--mono); color: #9E978C; }
+  .term .barra i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; } .term .barra span { margin-left: 8px; }
+  .term pre { margin: 0; padding: 14px 16px 16px; overflow-x: auto; font: 14px/1.7 var(--mono); color: #E8E2D6; white-space: pre-wrap; word-break: break-word; }
+  .term.largo pre { max-height: 420px; overflow-y: auto; }
+  .term .p { color: var(--terra); }
+  .term .ag { color: var(--terra); font-weight: 600; }
+  .sis { display: inline-block; font: 600 12px/1 var(--mono); letter-spacing: .06em; color: var(--terra-osc); background: var(--rosa); padding: 6px 10px; border-radius: 999px; margin: 14px 0 0; }
+  .copiar { margin-top: 10px; display: inline-flex; gap: 8px; align-items: center; cursor: pointer; border: 1px solid var(--linea); background: #fff; color: var(--tinta); border-radius: 999px; padding: 8px 14px; font: 600 14px var(--sans); }
+  .acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 4px; }
+  .acciones a { font: 600 14px var(--sans); }
+  .rondas { display: grid; gap: 10px; margin: 12px 0 0; }
+  .ronda { display: flex; gap: 14px; background: #fff; border: 1px solid var(--linea); border-radius: 14px; padding: 12px 14px; }
+  .ronda .n { flex: none; font-size: 26px; line-height: 1.1; width: 32px; }
+  .ronda b { color: var(--tinta); }
+  .seccion { margin: 44px 0 0; } .seccion h2 { font-size: 32px; }
+  details { background: var(--carta); border: 1px solid var(--linea); border-radius: 14px; padding: 14px 16px; margin: 10px 0; }
+  summary { cursor: pointer; font-weight: 700; color: var(--tinta); } details p { margin: 10px 0 0; }
+  code { font: 14px var(--mono); background: #fff; border: 1px solid var(--linea); border-radius: 6px; padding: 1px 6px; }
+  .loop { display: block; background: var(--rosa); border: 1px solid #EBC3B3; border-left: 6px solid var(--terra); border-radius: 14px;
+          padding: 14px 16px; margin: 0 0 30px; font-size: 16px; color: var(--tinta); text-decoration: none; }
+  .loop b { color: var(--terra-osc); } .loop span { display: block; margin-top: 6px; font-weight: 700; color: var(--terra-osc); }
+  .imperio { margin: 48px 0 0; padding: 26px 22px 24px; border-radius: 22px; background: var(--tinta); color: #E8E2D6; }
+  .imperio h2 { color: #fff; font-size: 34px; margin-top: 0; } .imperio h2 em { color: var(--terra); }
+  .imperio p { margin: 0 0 14px; } .imperio b { color: #fff; }
+  .imperio ul { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 8px; }
+  .imperio li { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px 14px; }
+  .imperio .cifra { font: 400 26px/1.25 var(--serif); color: #fff; margin: 6px 0 16px; }
+  .imperio .cifra em { color: var(--terra); }
+  .imperio .boton { margin-bottom: 8px; } .imperio .nota { color: #B9B2A6; }
+  footer { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--linea); font-size: 15px; color: var(--suave); }
+  footer a { color: var(--tinta); font-weight: 700; text-decoration: none; } footer em { font-family: var(--serif); font-size: 19px; color: var(--terra); }
+
+  .paso .foto { margin: 14px 0 6px; }
+  .num.osc { background: var(--tinta); box-shadow: 0 2px 0 #000; }
+  .mania { display: block; font: 600 12.5px/1.2 var(--mono); letter-spacing: .06em; color: var(--suave); text-transform: uppercase; margin: 6px 0 0; }
+  .paso h2 + .mania { margin-top: -4px; }
+  .ronda code { font-size: 13px; }
+  ol.simple { margin: 0 0 12px; padding-left: 22px; } ol.simple li { margin: 6px 0; }
+  .once { gap: 6px; } .once .ronda { padding: 8px 12px; gap: 10px; font-size: 15px; line-height: 1.45; }
+  .once .ronda .n { font-size: 17px; width: 22px; line-height: 1.5; color: var(--terra-osc); font-weight: 700; }
+</style>
+<style>
+  .forma { margin: 0 0 22px; padding: 18px 18px 16px; background: #fff; border: 1px solid var(--linea); border-radius: 18px; }
+  .forma h3 { margin: 0 0 6px; font: 400 26px/1.15 var(--serif); color: var(--tinta); }
+  .forma h3 b { font: 700 14px/1 var(--mono); color: #fff; background: var(--terra); border-radius: 999px; padding: 5px 10px; margin-right: 8px; vertical-align: 4px; }
+  .forma p { margin: 0 0 10px; }
+  .chip { display: inline-block; font: 600 12px/1 var(--mono); letter-spacing: .04em; color: var(--tinta); background: #fff; border: 1px solid var(--linea); border-radius: 999px; padding: 6px 10px; margin: 4px 6px 0 0; }
+  .tabla { width: 100%; border-collapse: collapse; margin: 10px 0 0; font-size: 15px; background: #fff; border-radius: 12px; overflow: hidden; }
+  .tabla td { border-top: 1px solid var(--linea); padding: 9px 12px; vertical-align: top; } .tabla tr:first-child td { border-top: 0; }
+  .tabla td:first-child { font: 600 14px var(--mono); color: var(--terra-osc); white-space: nowrap; }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="cabeza">
+    <img src="img/mascota-regalo.png" alt="">
+    <span class="etiqueta">GRATIS · EN ESPAÑOL</span>
+  </div>
+
+  <h1>Tu primer agente con <em>Grok Bot</em></h1>
+  <p class="bajada">Grok Bot es un agente que trae <strong>su propio computador en la nube</strong>, con navegador, archivos y tus cuentas abiertas. Le dices <strong>"crea un agente que haga esto"</strong> y él entra a internet y lo hace. Así lo uso yo, junto a Claude.</p>
+
+  <img class="foto" src="img/hero.jpg" alt="Balanza: Claude es más inteligente, pero hay 4 cosas que ya le pido a Grok Bot">
+  <p class="pie">Claude piensa mejor; Grok Bot se mueve mejor por internet. Yo uso los dos.</p>
+
+  <a class="loop" href="#imperio">🚀 <b>Los agentes de IA con los que hago cosas como esta les están sumando entre 5.000 y 10.000 dólares al mes a los clientes con los que trabajo.</b> Están dentro de Imperio, para multiplicar las ventas de los negocios.<span>Al final te cuento cómo funciona ↓</span></a>
+
+  <ul class="avisos">
+    <li>💳 <b>No se vende solo:</b> viene incluido en planes como SuperGrok o Cursor Pro, y tiene prueba gratis (pide tarjeta).</li>
+    <li>☁️ <b>Trabaja en la nube:</b> sigue funcionando aunque cierres tu computador. Tiene app para computador y para celular.</li>
+    <li>⏱️ <b>Tu primer agente sale en unos 10 minutos.</b> No necesitas instalar nada más.</li>
+  </ul>
+
+  <section class="paso">
+    <div class="num">1</div>
+    <h2>Activa <em>Grok Bot</em></h2>
+    <p>Entra con tu cuenta, elige un plan que lo incluya y descarga la app en tu computador o tu celular.</p>
+    <a class="boton" href="https://x.ai/bot" target="_blank" rel="noopener">Ir a Grok Bot →</a>
+  </section>
+
+  <section class="paso">
+    <div class="num">2</div>
+    <h2>Abre su computador e <em>inicia sesión</em></h2>
+    <p>Abre la ventana del computador virtual del bot y entra a las cuentas que va a usar: ManyChat, Instagram o tu correo. Si una página te pide un código o un captcha, tomas el control y lo pones tú.</p>
+    <img class="foto" src="img/computador.jpg" alt="El computador virtual de Grok Bot con el navegador abierto">
+    <p class="nota">Las contraseñas nunca se las escribas en el chat: las pones tú en la ventana o en el formulario seguro que te muestra.</p>
+  </section>
+
+  <section class="paso">
+    <div class="num">3</div>
+    <h2>Crea <em>tu agente</em></h2>
+    <p>Escríbele en el chat qué quieres, con detalle. Él lo crea con nombre, cargo y descripción:</p>
+    <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div><pre id="gb1">Crea un agente llamado [nombre]. Su trabajo es [qué hace], [cada cuánto], y me avisa por aquí cuando termine. Antes de empezar, dime qué necesitas de mí.</pre></div><button class="copiar" type="button" data-copiar-de="gb1">📋 Copiar</button>
+  </section>
+
+  <section class="paso">
+    <div class="num">4</div>
+    <h2>Los 4 usos del video, <em>listos para copiar</em></h2>
+    <p>Cambia lo que está entre corchetes.</p>
+
+    <div class="forma">
+      <h3><b>1</b>Tus recursos de ManyChat</h3>
+      <p>Lo que con Claude nunca pude automatizar: cada vez que subo un reel, él monta la palabra clave.</p>
+      <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div><pre id="gb2">Entra a mi ManyChat y crea una automatización para mi último reel de Instagram: cuando alguien comente la palabra [PALABRA], que le llegue por mensaje directo este texto con este link: [link]. Cuando esté lista, mándame un pantallazo.</pre></div><button class="copiar" type="button" data-copiar-de="gb2">📋 Copiar</button>
+      <img class="foto" src="img/manychat.jpg" alt="Grok Bot montando la palabra clave en ManyChat">
+    </div>
+
+    <div class="forma">
+      <h3><b>2</b>Imágenes y videos</h3>
+      <p>Claude no genera imágenes ni videos por sí solo. Grok Bot sí, sin conectarle nada.</p>
+      <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div><pre id="gb3">Créame 3 imágenes verticales para historias de Instagram sobre [tema], con este estilo: [estilo]. Y un video corto de 6 segundos de [escena]. Guárdalos en una carpeta y pásamelos.</pre></div><button class="copiar" type="button" data-copiar-de="gb3">📋 Copiar</button>
+    </div>
+
+    <div class="forma">
+      <h3><b>3</b>Recordatorios para tus hábitos</h3>
+      <p>Queda como una rutina: corre sola todos los días.</p>
+      <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div><pre id="gb4">Todos los días a las 9:30 p. m. mándame un recordatorio para acostarme, con una frase motivadora distinta que busques en internet. Los lunes y jueves a las 10 a. m., recuérdame grabar mis videos.</pre></div><button class="copiar" type="button" data-copiar-de="gb4">📋 Copiar</button>
+      <img class="foto" src="img/habitos.jpg" alt="Recordatorios de Grok Bot en el celular">
+      <p class="nota">¿Tienes un gimnasio? Cambia el mensaje y ponlo a motivar a tus clientes para que no dejen de ir.</p>
+    </div>
+
+    <div class="forma">
+      <h3><b>4</b>Escribirle a tus clientes por WhatsApp</h3>
+      <p>Abres tu WhatsApp Web en su computador y les escribe como si fueras tú.</p>
+      <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div><pre id="gb5">Abre mi WhatsApp Web y escríbeles a estos clientes un mensaje corto y distinto para cada uno, preguntándoles cómo les fue con [producto]: [lista de nombres]. Que suene como yo, y muéstrame los mensajes antes de enviarlos.</pre></div><button class="copiar" type="button" data-copiar-de="gb5">📋 Copiar</button>
+      <img class="foto" src="img/whatsapp.jpg" alt="Grok Bot escribiendo desde WhatsApp Web">
+      <p class="nota"><b>Úsalo con poquitas personas.</b> Las condiciones de WhatsApp prohíben los mensajes automáticos y masivos desde la app normal, y te pueden bloquear la línea. Para escribirle a muchos, usa la API oficial: <a href="https://diegodoc1111.github.io/seguimiento-whatsapp/" target="_blank" rel="noopener">aquí te enseño cómo</a>.</p>
+    </div>
+  </section>
+
+  <section class="paso">
+    <div class="num">5</div>
+    <h2>Ponle <em>reglas</em></h2>
+    <p>En la configuración del bot escribes, en palabras, lo que puede y lo que no puede hacer. Por ejemplo:</p>
+    <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div><pre id="gb6">No compres nada, no borres nada y no publiques nada sin preguntarme primero. Si una página te pide pagar, detente y avísame.</pre></div><button class="copiar" type="button" data-copiar-de="gb6">📋 Copiar</button>
+    <p class="nota" style="margin-top:12px">Todos tus agentes comparten el mismo computador: si entras ahí a tu banco o a tu Amazon, cualquiera de ellos podría usarlo. Abre solo las cuentas que necesitan.</p>
+  </section>
+
+  <section class="seccion">
+    <h2>Preguntas <em>frecuentes</em></h2>
+    <details>
+      <summary>¿Cuánto cuesta?</summary>
+      <p>No se vende por separado: viene con SuperGrok (unos 30 dólares al mes) o con Cursor Pro (unos 20 dólares al mes). Tiene prueba gratis, pero pide tarjeta.</p>
+    </details>
+    <details>
+      <summary>¿Reemplaza a Claude?</summary>
+      <p>No. Yo uso Claude para pensar, crear anuncios y guiones, y Grok Bot para moverse por internet y hacer las tareas repetitivas.</p>
+    </details>
+    <details>
+      <summary>¿Si apago mi computador se detiene?</summary>
+      <p>No. Corre en la nube: las rutinas siguen funcionando con tu computador cerrado.</p>
+    </details>
+    <details>
+      <summary>¿Necesito saber programar?</summary>
+      <p>No. Le hablas en palabras, como a un asistente.</p>
+    </details>
+  </section>
+
+
+  <section class="imperio" id="imperio">
+    <h2>Deja de hacerlo todo <em>a mano</em></h2>
+    <p class="cifra">Haz en <em>3 días</em> el trabajo de todo un mes.</p>
+    <p>Ten un equipo de marketing de 4 personas trabajando para ti por unos <b>$25 al mes</b>: <b>los agentes Imperio</b>. Te hacen:</p>
+    <ul>
+      <li>✍️ El contenido y los carruseles.</li>
+      <li>📣 Los anuncios y los VSL.</li>
+      <li>🖥️ Las páginas web.</li>
+      <li>📊 Las campañas en Meta.</li>
+      <li>💬 Y hasta responden tus mensajes.</li>
+    </ul>
+    <p><b>Sin saber de tecnología: solo copias, pegas y facturas.</b></p>
+    <p>Son los mismos agentes que hoy les suman <b>entre $5.000 y $10.000 dólares extra al mes</b> a los negocios con los que trabajo: automatizan todo el marketing y hacen el trabajo de 4 personas.</p>
+    <a class="boton" href="https://ig.me/m/soydiegoosorio" target="_blank" rel="noopener">Escríbeme “IMPERIO” por Instagram →</a>
+    <p class="nota">Te cuento cómo funciona y si encaja con tu negocio.</p>
+  </section>
+
+
+  <footer>
+    <p>Guía de <a href="https://instagram.com/soydiegoosorio">@soydiegoosorio</a>. Esta guía también está en <a href="https://github.com/diegodoc1111/agente-grok-bot">GitHub</a>.</p>
+    <p><em>Úsalo y compártelo.</em></p>
+  </footer>
+
+</main>
+<script>
+  function copiarTexto(t, boton) {
+    var listo = function () { var o = boton.textContent; boton.textContent = "✅ Copiado"; setTimeout(function () { boton.textContent = o; }, 1800); };
+    var respaldo = function () {
+      var a = document.createElement("textarea"); a.value = t; a.setAttribute("readonly", "");
+      a.style.position = "fixed"; a.style.top = "-1000px"; document.body.appendChild(a); a.select();
+      var ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(a);
+      if (ok) { listo(); } else { boton.textContent = "Mantén presionado el texto para copiarlo"; }
+    };
+    if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(t).then(listo, respaldo); } else { respaldo(); }
+  }
+  document.querySelectorAll("[data-copiar-de]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var el = document.getElementById(b.getAttribute("data-copiar-de"));
+      var t = el.innerText.replace(/^❯\s*/, "");
+      copiarTexto(t, b);
+    });
+  });
+</script>
+
+</body>
+</html>
